@@ -58,46 +58,88 @@ Purpose:  This project will show you the difference between member functions and
 #include <string>
 struct T
 {
-    T(<#type name#> v, const char* <#variable name#>)   //1
-    //2
-    //3
+    T(int v, const char* n) : value(v), name(n) {} //1
+    int value;//2
+    const char* name;//3
 };
 
-struct <#structName1#>                                //4
+struct findBiggerInt                                //4
 {
-    <#type name#> compare(<#type name#> a, <#type name#> b) //5
+    T* compare(T* a, T* b) //5
     {
-        if( a->value < b->value ) return a;
-        if( a->value > b->value ) return b;
+        if(a != nullptr && b != nullptr) 
+        {
+            if( a->value < b->value ) return a;
+            if( a->value > b->value ) return b;            
+        }
         return nullptr;
     }
 };
 
 struct U
 {
-    float <#name1#> { 0 }, <#name2#> { 0 };
-    <#returnType#> <#memberFunction#>(<#type name#>* <#updatedValue#>)      //12
+    float memberVariableA { 0 }, memberVariableB { 0 };
+    float memberFuncUpdateMultiplyTwoFloats(float* updatedValue)      //12
     {
-        
+        if(updatedValue == nullptr)
+        {
+            std::cout << "Error. Nullptr is used." << std::endl;
+            return 0;
+        }
+        else
+        {
+            std::cout << "U's memberVariableA value: " << this->memberVariableA << std::endl;
+            this->memberVariableA = *updatedValue;
+            std::cout << "U's <#name1#> updated value: " << this->memberVariableA << std::endl;
+            while( std::abs(this->memberVariableB - this->memberVariableA) > 0.001f )
+            {
+                /*
+                 write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+                 */
+                if(this->memberVariableA < this->memberVariableB)
+                {
+                    this->memberVariableB -= 0.001f;
+                }
+                else
+                {
+                   this->memberVariableB += 0.001f; 
+                }
+            }
+            std::cout << "U's memberVariableB updated value: " << this->memberVariableB << std::endl;
+            return this->memberVariableB * this->memberVariableA;
+        }
     }
 };
 
-struct <#structname2#>
+struct StaticFuncUpdateMultiplyTwoFloats
 {
-    static <#returntype#> <#staticFunctionA#>(U* that, <#type name#>* <#updatedValue#> )        //10
+    static float updateAndMultiplyStatic(U* that, float* updatedValue )        //10
     {
-        std::cout << "U's <#name1#> value: " << that-><#name1#> << std::endl;
-        that-><#name1#> = <#updatedValue#>;
-        std::cout << "U's <#name1#> updated value: " << that-><#name1#> << std::endl;
-        while( std::abs(that-><#name2#> - that-><#name1#>) > 0.001f )
+        if(that == nullptr || updatedValue == nullptr)
+        {
+            std::cout << "Error. Nullptr is used." << std::endl;
+            return 0;
+        }
+        
+        std::cout << "U's memberVariableA value: " << that->memberVariableA << std::endl;
+        that->memberVariableA = *updatedValue;
+        std::cout << "U's <#name1#> updated value: " << that->memberVariableA << std::endl;
+        while( std::abs(that->memberVariableB - that->memberVariableA) > 0.001f )
         {
             /*
              write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
              */
-            that-><#name2#> += ;
+            if(that->memberVariableA < that->memberVariableB)
+            {
+                that->memberVariableB -= 0.001f;
+            }
+            else
+            {
+               that->memberVariableB += 0.001f; 
+            }
         }
-        std::cout << "U's <#name2#> updated value: " << that-><#name2#> << std::endl;
-        return that-><#name2#> * that-><#name1#>;
+        std::cout << "U's memberVariableB updated value: " << that->memberVariableB << std::endl;
+        return that->memberVariableB * that->memberVariableA;
     }
 };
         
@@ -117,17 +159,24 @@ struct <#structname2#>
 
 int main()
 {
-    T <#name1#>( , );                                             //6
-    T <#name2#>( , );                                             //6
+    T a(6, "SuSu");                                             //6
+    T b(8, "HuHu");                                             //6
     
-    <#structName1#> f;                                            //7
-    auto* smaller = f.compare( , );                              //8
-    std::cout << "the smaller one is << " << smaller->name << std::endl; //9
+    findBiggerInt f;                                            //7
+    auto* smaller = f.compare(&a, &b);                              //8
+    if(smaller != nullptr)
+    {
+        std::cout << "the smaller one is << " << smaller->name << std::endl;
+    }
+    else
+    {
+        std::cout << "Function returned nullptr because input variables are not valid or have the same value" << std::endl;
+    } //9
     
-    U <#name3#>;
+    U FloatPairA;
     float updatedValue = 5.f;
-    std::cout << "[static func] <#name3#>'s multiplied values: " << <#structname2#>::<#staticFunctionA#>( , ) << std::endl;                  //11
+    std::cout << "[static func] <#name3#>'s multiplied values: " << StaticFuncUpdateMultiplyTwoFloats::updateAndMultiplyStatic(&FloatPairA, &updatedValue) << std::endl;                  //11
     
-    U <#name4#>;
-    std::cout << "[member func] <#name4#>'s multiplied values: " << <#name4#>.<#memberFunction#>( &updatedValue ) << std::endl;
+    U FloatPairB;
+    std::cout << "[member func] <#name4#>'s multiplied values: " << FloatPairB.memberFuncUpdateMultiplyTwoFloats( &updatedValue ) << std::endl;
 }
